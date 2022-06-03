@@ -1,0 +1,38 @@
+{% extends "core/base.html" %}
+{% block title %}Универмаг{% endblock %}
+{% load static %}
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+    <div class="main_list" id="container">
+        <div class="row">
+            <div class="Product">
+                {% for product in product_list %}
+                    <div class="item">
+                        <a href="product/{{ product.slug }}" class="home_product_block_link">
+                            <div class="home_img1_block__container__">
+                                {% if product.image1 %}
+                                    <img class="product_img_homepage" src="{{ product.image1.url }}" alt="Картинка">
+                                {% endif %}
+                            </div>
+                            <div class="item-description">
+                                <p id="price">{{ product.price }} &#x20bd; </p>
+                                <div class="product_title_block">
+                                    <h1 class="product_title">{{ product.title }}</h1>
+                                </div>
+                                <p>Звездочки</p>
+                                <p>Доставка:завтра</p>
+                            </div>
+                            <div class="item-description-bottom_btns">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ product.id }}" name="product_list_view_id">
+                                    <button class="detail_button"><span class="Button-inner-"></span>Добавить в корзину</button>
+                                </form>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

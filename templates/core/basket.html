@@ -1,0 +1,51 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/basket.css'%}">
+    <div class="main_list">
+        <div class="basket_main_container">
+            <div class="basket-product_sections">
+                <div class="basket-header_tabs">
+                    <h1 class="basket-header_tabs--basket_title">Корзина</h1>
+                </div>
+{#                Сделать проверку на наличие товара#}
+                {% for product in products %}
+                    <div class="basket_section">
+                        <div class="basket_section_item_good">
+                            {% if product.image1 %}
+                                <a href=""><img src="{{ product.image1.url }}" alt="Ошибка загрузки фотографии"
+                                    class="basket_product_image"></a>  {# Первая ссылка для предпросмотра #}
+                            {% else %}
+                                <img src="{% static 'css/img_load_error.png' %}" alt="Ошибка загрузки"
+                                     class="basket_product_image">
+                            {% endif %}
+                            <a href=""><p class="basket_product_title">{{ product.title }}</p></a>  {# Вторая ссылка  #}
+                            <div class="basket-product_owner_block">
+                                <p class="basket_product_owner">"{{ product.owner }}"</p>
+                            </div>
+                        </div>
+                        <div class="basket-item_price_block">
+                            <span class="basket-item_price">{{ product.price }} &#8381;</span>
+                        </div>
+                        <div class="basket_product_buttons">
+                            <div class="counter_buttons__counter">
+                                <button class="counter_BTN" id="counter_btn_minus"></button>
+                                <input type="text" class="counter_display" maxlength="3" value="1">
+                                <button class="counter_BTN" id="counter_btn_plus"></button>
+                            </div>
+                            <div class="delete_btn">
+                                <button class="basket-delete_product_from_basket_btn"><span>Удалить</span></button>
+                            </div>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

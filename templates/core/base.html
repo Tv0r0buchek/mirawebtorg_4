@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'icons/favicon.png' %}"/>
+</head>
+
+<body>
+<div class="header-container">
+    <div class="header-container-middle_block">
+        <div id="header" class="header">
+            <div class="header-label">
+                <a id="univer_mag_url" href="{% url 'home' %}"><h1 id="header_title"> Универмаг</h1></a>
+            </div>
+            <div class="search-block">
+                <input type="search" maxlength="300" placeholder="Я ищу..." class="header-search_panel">
+                <a class="search-btn" href=""><i class="fa-solid fa-magnifying-glass"></i></a>
+            </div>
+            <div class="buttons">
+                <a class="buttons-icon" href="{% url 'basket' %}">
+                    <span><i class="fa-solid fa-cart-shopping"></i></span>
+                    <p class="buttons-icon-label">Корзина</p>
+                </a>
+                <a class="buttons-icon" href="">
+                    <span><i class="fa-solid fa-location-dot"></i></span>
+                    <p class="buttons-icon-label">адреса</p>
+                </a>
+                {% if user.is_superuser %}
+                    <a class="buttons-icon" href="{% url 'add_product' %}">
+                        <span><i class="fa-solid fa-calendar-plus"></i></span>
+                        <p class="buttons-icon-label">добавить товар</p>
+                    </a>
+                {% else %}
+                    <a class="buttons-icon" href="">
+                        <span><i class="fa-solid fa-question"></i></span>
+                        <p class="buttons-icon-label">Добавить товар</p>
+                    </a>
+                {% endif %}
+            </div>
+            {% if user.is_authenticated %}
+                <div class="link_auth">
+                    <p class="greeting">Добро пожаловать</p>
+                    <p><a id="logout-btn" href="{% url 'logout' %}">Выйти из аккаунта</a></p>
+                </div>
+            {% else %}
+                <div class="link_auth">
+                    <p><a id="logout-btn" href="{% url 'login' %}">Вход на сайт</a></p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="header-radius"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% block content %}{% endblock %}
+
+<footer>
+    <p style="padding-top:50px;">
+        Lorem ipsum dolor sit amet, consecrate radicalising elit. A amet dolorous id ipsa molests paginator quasi quasi
+        repellat! Corporas do lorem eum ex fugit in militia quasi squamous repellat suspicious Ande.
+        Lorem ipsum dolor sit amet, consecrate radicalising elit. A amet dolorous id ipsa molests paginator quasi quasi
+        repellat! Corporas do lorem eum ex fugit in militia quasi squamous repellat suspicious Ande.
+        Lorem ipsum dolor sit amet, consecrate radicalising elit. A amet dolorous id ipsa molests paginator quasi quasi
+        repellat! Corporas do lorem eum ex fugit in militia quasi squamous repellat suspicious Ande.
+        Lorem ipsum dolor sit amet, consecrate radicalising elit. A amet dolorous id ipsa molests paginator quasi quasi
+        repellat! Corporas do lorem eum ex fugit in militia quasi squamous repellat suspicious Ande.
+        Lorem ipsum dolor sit amet, consecrate radicalising elit. A amet dolorous id ipsa molests paginator quasi quasi
+        repellat! Corporas do lorem eum ex fugit in militia quasi squamous repellat suspicious Ande.
+        Lorem ipsum dolor sit amet, consecrate radicalising elit. A amet dolorous id ipsa molests paginator quasi quasi
+        repellat! Corporas do lorem eum ex fugit in militia quasi squamous repellat suspicious Ande.
+    </p>
+    <div class="footer-radius"></div>
+</footer>
+
+
+<script src="https://kit.fontawesome.com/97b655e500.js" crossorigin="anonymous"></script>
+<script src='{% static "js/flowtype.js" %}'></script>
+<script type="text/javascript" src='{% static "js/main.js" %}'></script>
+<script type="text/javascript" src='{% static "js/basket.js" %}'></script>
+
+</body>
+</html>

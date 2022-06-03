@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}Аутентификация{% endblock %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/Sign_up.css'%}">
+    <div class="main_list" id="container">
+        <div class="alignment_block">
+            <div class="registration-block">
+                <a href="{% url 'home' %}"><h1 id="name_of_mag_label">Универмаг</h1></a>
+                <h2 id="register_label">Аутентификация</h2>
+                <form method="POST" class="registerForm">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="SignUpBtn_contain">
+                        <button class="SignUpBtn" id="signButton">Войти</button>
+                    </div>
+                </form>
+            </div>
+            <div class="Registration_offer_container">
+                <a href="{% url 'signUp' %}" class="Sign_user_question_btn">Нет аккаунта?</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

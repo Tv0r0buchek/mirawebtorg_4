@@ -1,0 +1,42 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/add_product.css'%}">
+    <form method="post" class="add_product_form" id = 'add_product' enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ add_form.as_p }}
+        <input multiple='true' name="get_images" type="file" accept=".png,.jpg,.jpeg"> <br>
+        <input type="submit">
+    </form>
+    <script>
+        $(document).ready(function(){
+            $("#add_product").submit(function(){
+                const $this = $(this);
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/add_product/',
+                    type: "POST",
+                    headers: {"some_data":"some_data"},
+                    dataType:"json",
+                    contentType: false,
+                    data: {"form_data":$this.serialize()},
+                    beforeSend: function(xhr){xhr.setRequestHeader('X-Test-Header', 'test-value')},
+                    done: function(){
+                        console.log("success")
+
+                    },
+                    fail(){
+                        console.log("fail")
+                        alert('Не успех')
+                    },
+                    error(jqXHR){
+                        console.log(jqXHR.status)
+                        console.log(jqXHR.error + jqXHR.message)
+                    }
+
+                })
+            })
+        })
+
+    </script>
+{% endblock %}
+

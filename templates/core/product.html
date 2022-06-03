@@ -1,0 +1,151 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}{{ product.title }}{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/product.css' %}">
+    <div class="main_list">
+        <div class="product_detail-main_container">
+            <div class="title_block">
+                <h1><span class="title_block-product_title">{% if product.mark %}{{ product.mark }}
+                    / {% endif %}{{ product.title }}</span></h1>
+                <div class="title_block-article_number__rating">
+                    <span>Артикул:{{ product.slug }}</span>
+                    <span>{{ product.rating }}</span>
+                    <span class="rating_label"> рейтинг товара: {{ average_rating }}</span>
+                </div>
+            </div>
+            <div class="product_detail-main_part">
+                <div class="gallery_container">
+                    <div class="gallery_swiper">
+                        <div class="gallery_photo">
+                            {% if product.image1 %}
+                                <img src="{{ product.image1.url }}" alt="">
+                            {% else %}
+                                <img src="{% static 'css/img_load_error.png' %}" alt="Ошибка загрузки">
+                            {% endif %}
+                        </div>
+                        {% for picture in pictures_list %}
+                            <div class="gallery_photo">
+                                <img src="{{ picture.image.url }}" alt="Картинки">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="gallery_show">
+                        {% if product.image1 %}
+                            <img class="gallery_show-img" src="{{ product.image1.url }}"
+                                 alt="Фотография не доступна, обратитесь в техническую поддержку сайта">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="product_card">
+                    <div class="product_price">
+                        <p>{{ product.price }} &#x20bd;</p>
+                        <button id="add_to_basket_button"
+                                name="product_detail_form"
+                                value="add_to_basket_form_one">
+                            Добавить в корзину
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="Temporary________block">
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button type="submit" name="product_detail_form" value="add_comment_form_two">
+                    Добавить комментарий
+                </button>
+            </form>
+
+            {% for comment in comments reversed %}
+                <div class="review">
+                    <p class="reviews-review-name"><em>Отзыв оставил {{ comment.author }}</em></p>
+                    <p class="reviews-review-email">{{ comment.username }}</p>
+                    <p>{{ comment.review }}</p>
+                    <p>{{ comment.rating }}</p>
+                    <hr>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="product_added_into_basket_msg">
+            <div class="message_product_added">
+                Товар добавлен в корзину
+            </div>
+            <div class="message_product_already_added">
+                Товар уже в корзине
+            </div>
+            <div class="modal_window_btns">
+                <span><a class="button_to_basket" href="{% url 'basket' %}">Перейти к корзине</a></span>
+                <button class="button_stay_here">
+                    Остаться
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="dialog_window_background"></div>
+    <script>
+        $(`#add_to_basket_button`).on('click', function () {
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            const csrftoken = getCookie('csrftoken');
+            let data = {'key': 'AddToBasket'}
+            $.ajax({
+                url: 'http://127.0.0.1:8000' + '{{ request.path }}',
+                type: "POST",
+                headers: {'X-CSRFToken': csrftoken},
+                data: JSON.stringify(data),
+                dataType: 'json',
+                contentType: "application/json;charset=utf-8"
+            })
+                .done(function (data) {
+                    console.log(data);
+                    console.log('ошибок нет')
+                    green()
+                    productAdded_basket_dialog_show(data['message'])
+                })
+                .fail(function (data, jqXHR) {
+                    console.log("Запрос не сработал " + data);
+                    if (jqXHR.status && jqXHR.status === 800) {
+                        console.log(jqXHR.responseText.error)
+                        red()
+                    }
+                    if (jqXHR.status && jqXHR.status === 500) {
+                        console.log(jqXHR.status)
+                        red()
+                        alert("Возникла ошибка на стороне сервера, попробуйте позже. Код ошибки" + " " + jqXHR.status)
+                    }
+                    if (jqXHR.status) {
+                        console.log(jqXHR.status)
+                        red()
+                    }
+                    if (jqXHR.status && jqXHR.status === 401) {
+                        console.log(jqXHR.status)
+                        red()
+                        alert("Пользователь не авторизован. Код ошибки" + " " + jqXHR.status)
+                    }
+                })
+        });
+
+
+    </script>
+{% endblock %}
+
+
+
