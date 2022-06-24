@@ -2,7 +2,11 @@ from typing import Dict, Any
 from django.http import JsonResponse, HttpResponse, Http404, HttpResponseServerError
 from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView, TemplateView  # views.generic хранит все классовые обработчики
-from core.forms import CommentForm, AddProductForm
+from core.forms import \
+    CommentForm, \
+    AddProductForm, \
+    LaptopCharacteristicForm, \
+    ChoiseSubcategoryForm
 from core.models import *
 from django.db.models import Avg
 import json
@@ -37,8 +41,12 @@ class ProductDetailView(DetailView):
     temporary_data = None
 
     @staticmethod
-    def round_custom(num, step=0.5):
+    def step_round(num, step=0.5):
         return round(num / step) * step
+
+    # def calc_average_rating(self):
+    #     rounding_step = 0.5
+
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -49,18 +57,16 @@ class ProductDetailView(DetailView):
             data['comment_form'] = CommentForm(instance=self.request.user)
         else:
             data['comment_form'] = CommentForm()
-        if len(Review.objects.filter(product_connected=self.get_object())) > 0:
+
+        if Review.objects.filter(product_connected=self.get_object()).exists():  #попробовать избавиться от постоянной проверки в базе данных
             average_rt = Review.objects.filter(product_connected=self.get_object()).aggregate(Avg('rating'))
             avr_intermediate = str(average_rt.get("rating__avg")).replace(",", ".")
-            data["average_rating"] = self.round_custom(float(avr_intermediate))
+            data["average_rating"] = self.step_round(float(avr_intermediate))
         else:
             data["average_rating"] = 0
-
-        # data["average_rating"] = average_rt.get("rating__avg")
         return data
 
     def post(self, request, *args, **kwargs):
-
         if self.request.user.is_authenticated:
             body_data = json.loads(request.body.decode('utf-8'))
             key_ = body_data['key']
@@ -92,6 +98,7 @@ class ProductDetailView(DetailView):
                                      product_connected=self.get_object())
                     comment.save()
                     print(form.errors())
+                    # self.calc_average_rating()
                 else:
                     print(form.errors)
                     # raise Http404
@@ -103,8 +110,8 @@ class AddProductView(TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        form = AddProductForm
-        data["add_form"] = form
+        subcategory_form = ChoiseSubcategoryForm
+        data['ChoiseSubcategoryForm'] = subcategory_form
         return data
 
     def post(self, request, *args, **kwargs):

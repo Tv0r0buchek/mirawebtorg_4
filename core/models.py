@@ -3,34 +3,26 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-
 """
 Разнести ли характеристики компьютеры тоже на категории или написать все в один класс, но тогда как в шаблоне страницы выводить свои
 заголовки в характеристиках для каждой категории. 
 """
 
+
 class Category(models.Model):
     category_name = models.CharField(max_length=30)
     sub_categories = models.ManyToManyField("self", blank=True)
+
     def __str__(self):
         return self.category_name
+
 
 class SubCategory(models.Model):
     name = models.TextField(max_length=50)
     categories = models.ManyToManyField(Category)
+
     def __str__(self):
         return self.name
-
-
-# class ScreenCharacteristic(models.Model):
-#     Diagonal_inches = models.IntegerField
-#
-class ComputerCharacteristic(models.Model):
-    guarantee_mounth = models.IntegerField()  # А если гарантия пожизненная?
-    model = models.CharField(max_length=50)
-    operational_system = models.CharField(max_length=30)
-    # subcategory = models.ManyToOneRel  #cвязь с подкатегорией и продуктом - связь с двумя классами
-
 
 
 class Product(models.Model):
@@ -39,16 +31,41 @@ class Product(models.Model):
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     slug = models.SlugField(unique=True)  # "штрих код"
     price = models.DecimalField(max_digits=12,
-                                decimal_places=0)  #decimal_places знаки после запятой
+                                decimal_places=0)  # decimal_places знаки после запятой
     creation_date = models.DateTimeField(auto_now_add=True)  # auto now сдесь время создания записи в базе данных
     last_update_time = models.DateTimeField(auto_now=True)  # auto now сдесь время последнего обновления
     image1 = models.ImageField(blank=True)
     mark = models.CharField(max_length=50, blank=True)
-    available = models.BooleanField(default=True)       #доступность товара в магазине True or False
-    category = models.ManyToManyField(SubCategory)
+    available = models.BooleanField(default=True)  # доступность товара в магазине True or False
+    sub_category = models.ManyToManyField(SubCategory)
+    rating = models.DecimalField(max_digits=2, decimal_places=1,default=0)
 
     def __str__(self):
         return self.title
+
+
+# class ScreenCharacteristic(models.Model):
+#     Diagonal_inches = models.IntegerField
+#
+
+class GPU_Characteristic(models.Model):
+    name = models.CharField(max_length=50)
+    type = models.CharField(max_length=50)
+    width = models.CharField(max_length=50)
+    height = models.CharField(max_length=50)
+    gpu_memory = models.CharField(max_length=50)
+    TDP = models.IntegerField()
+
+
+class LaptopCharacteristic(models.Model):
+    guarantee_mounth = models.CharField(max_length=20)
+    model = models.CharField(max_length=50)  # конкретная модель компьютера
+    operational_system = models.CharField(max_length=30)
+    cpu = models.CharField(max_length=50)
+    gpu = models.ForeignKey(GPU_Characteristic, on_delete=models.CASCADE)
+    batery = models.CharField(max_length=50)
+    screen_diagonal = models.DecimalField(max_digits=5, decimal_places=1)
+    product_connected = models.ManyToManyField(Product)
 
 
 class Photo(models.Model):

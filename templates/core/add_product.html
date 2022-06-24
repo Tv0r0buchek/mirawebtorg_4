@@ -2,11 +2,15 @@
 {% load static %}
 {% block content %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/add_product.css'%}">
-    <form method="post" class="add_product_form" id = 'add_product' enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ add_form.as_p }}
-        <input multiple='true' name="get_images" type="file" accept=".png,.jpg,.jpeg"> <br>
-        <input type="submit">
+{#    <form method="post" class="add_product_form" id = 'add_product' enctype="multipart/form-data">#}
+{#        {% csrf_token %}#}
+{#        {{ add_form.as_p }}#}
+{#        <input multiple='true' name="get_images" type="file" accept=".png,.jpg,.jpeg"> <br>#}
+{#        <input type="submit">#}
+{#    </form>#}
+    <form action="">
+    {% csrf_token %}
+    {{ ChoiseSubcategoryForm.as_p }}
     </form>
     <script>
         $(document).ready(function(){
