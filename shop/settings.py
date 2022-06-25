@@ -128,3 +128,11 @@ LOGIN_REDIRECT_URL = "home"  # для работы входа, после вхо
 LOGOUT_REDIRECT_URL = "login"  # перекидывает на вход, если выходишь с аккаунта
 
 LOGIN_URL = "login"  # Перекидывает на вход если пытаешь открыть детальный просмотр без входа в аккаунт
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'webmiratorg@gmail.com'
+EMAIL_HOST_PASSWORD = 'ppjrwvieszkhbrni' #past the key or password app here
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'webmiratorg@gmail.com'

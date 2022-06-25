@@ -1,5 +1,7 @@
 from typing import Dict, Any
 from django.http import JsonResponse, HttpResponse, Http404, HttpResponseServerError
+from django.core.mail import send_mail
+from django.conf import settings
 from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView, TemplateView  # views.generic хранит все классовые обработчики
 from core.forms import \
@@ -52,7 +54,10 @@ class ProductDetailView(DetailView):
         data = super().get_context_data(**kwargs)
         data["pictures_list"] = Photo.objects.filter(product_connected=self.get_object())
         data["comments"] = Review.objects.filter(product_connected=self.get_object())
-
+        send_mail('Тест письмо',
+                  'Если это сработает, то это замечательно!',
+                  settings.EMAIL_HOST_USER,
+                  ['skh4342@gmail.com'])
         if self.request.user.is_authenticated:
             data['comment_form'] = CommentForm(instance=self.request.user)
         else:
@@ -64,6 +69,7 @@ class ProductDetailView(DetailView):
             data["average_rating"] = self.step_round(float(avr_intermediate))
         else:
             data["average_rating"] = 0
+
         return data
 
     def post(self, request, *args, **kwargs):
