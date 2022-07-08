@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-#amy#wf$z=2tuk_%_rw%_0k(wlcly98f51!6$u81)ba+0vuyq-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "192.168.0.107"]
+ALLOWED_HOSTS = ["127.0.0.1", "192.168.0.106"]
 
 # Application definition
 
@@ -129,10 +129,12 @@ LOGOUT_REDIRECT_URL = "login"  # перекидывает на вход, есл�
 
 LOGIN_URL = "login"  # Перекидывает на вход если пытаешь открыть детальный просмотр без входа в аккаунт
 
+PASSWORD_RESET_TIMEOUT_DAYS = 1
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'webmiratorg@gmail.com'
-EMAIL_HOST_PASSWORD = 'ppjrwvieszkhbrni' #past the key or password app here
+EMAIL_HOST_PASSWORD = 'ppjrwvieszkhbrni'  # past the key or password app here
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = 'webmiratorg@gmail.com'

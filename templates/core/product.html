@@ -55,9 +55,9 @@
             <form action="" method="post">
                 {% csrf_token %}
                 {{ comment_form.as_p }}
-                <button type="submit" name="product_detail_form" value="add_comment_form_two">
-                    Добавить комментарий
-                </button>
+                <input type="submit" name="product_detail_form" value="add_comment_form_two">
+
+
             </form>
 
             {% for comment in comments reversed %}

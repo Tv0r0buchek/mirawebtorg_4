@@ -54,10 +54,10 @@ class ProductDetailView(DetailView):
         data = super().get_context_data(**kwargs)
         data["pictures_list"] = Photo.objects.filter(product_connected=self.get_object())
         data["comments"] = Review.objects.filter(product_connected=self.get_object())
-        send_mail('Тест письмо',
-                  'Если это сработает, то это замечательно!',
-                  settings.EMAIL_HOST_USER,
-                  ['skh4342@gmail.com'])
+        # send_mail('Другое Тест письмо',
+        #           'Если это сработает, то это замечательно!',
+        #           settings.EMAIL_HOST_USER,
+        #           ['skh4342@gmail.com'])
         if self.request.user.is_authenticated:
             data['comment_form'] = CommentForm(instance=self.request.user)
         else:
@@ -74,9 +74,11 @@ class ProductDetailView(DetailView):
 
     def post(self, request, *args, **kwargs):
         if self.request.user.is_authenticated:
+            print("пользователь авторизован")
             body_data = json.loads(request.body.decode('utf-8'))
             key_ = body_data['key']
             if request.headers.get('x-requested-with') == 'XMLHttpRequest' and key_ == "AddToBasket":
+                print("Это запрос добавить в корзину")
                 this_user = self.request.user
                 this_product = Product.objects.get(id=self.get_object().id)
                 product_to_basket = ShoppingCart(
@@ -89,26 +91,31 @@ class ProductDetailView(DetailView):
                     data_to_response = {"message": "product_added"}
                     product_to_basket.save()
                 return HttpResponse(json.dumps(data_to_response))
-        else:
-            response = HttpResponse(json.dumps({'message': "UserAuthenticationFAIL"}),
-                                    content_type='application/json', status=401)
-            return response
-
-        if request.POST.get("product_detail_form") == 'add_comment_form_two':
-            if self.request.user.is_authenticated:
+            if "product_detail_form" in request.POST:  #== 'add_comment_form_two':
+                print("Запрос добавить комментарий")
                 form = CommentForm(request.POST)
                 if form.is_valid():
+                    print("Форма валидна")
+
                     comment = Review(review=request.POST.get("review"),
                                      rating=request.POST.get("rating"),
                                      author=self.request.user,
                                      product_connected=self.get_object())
                     comment.save()
-                    print(form.errors())
+                    print(form.errors(), ":ошибки")
                     # self.calc_average_rating()
                 else:
-                    print(form.errors)
+                    print(form.errors(), ":ошибки и сработало иначе")
                     # raise Http404
                 return redirect("product_detail", *args, **kwargs)
+        else:
+            print(" Пользователь не авторизован")
+            response = HttpResponse(json.dumps({'message': "UserAuthenticationFAIL"}),
+                                    content_type='application/json', status=401)
+            return response
+
+
+
 
 
 class AddProductView(TemplateView):
@@ -166,3 +173,4 @@ class BasketView(ListView):
         # else:
         #     data["my_errors"] = "is_not_authenticated"
         return data
+

@@ -4,6 +4,7 @@ from django.views.generic import CreateView
 from accounts.forms import UserSignUpForm, MyLoginForm
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
+from django.contrib.auth.views import PasswordResetView
 
 
 # class MyUserSignUpForm(UserSignUpForm):
@@ -44,3 +45,7 @@ class MyLoginView(LoginView):
         if self.request.user.is_authenticated:
             return redirect("home")
         return super().get(request, *args, **kwargs)
+
+
+class MyPasswordResetView(PasswordResetView):
+    html_email_template_name = "registration/password_reset_email.html"
