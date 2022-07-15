@@ -75,10 +75,16 @@ class ProductDetailView(DetailView):
     def post(self, request, *args, **kwargs):
         if self.request.user.is_authenticated:
             print("пользователь авторизован")
-            body_data = json.loads(request.body.decode('utf-8'))
-            key_ = body_data['key']
+            # !!! удаляем обращение к json отсюда, переносим в условие ниже
+            # body_data = json.loads(request.body.decode('utf-8'))
+            # key_ = body_data['key']
             if request.headers.get('x-requested-with') == 'XMLHttpRequest' and key_ == "AddToBasket":
                 print("Это запрос добавить в корзину")
+                ###
+                # вот сюда переносим
+                body_data = json.loads(request.body.decode('utf-8'))
+                key_ = body_data['key']
+                ####
                 this_user = self.request.user
                 this_product = Product.objects.get(id=self.get_object().id)
                 product_to_basket = ShoppingCart(
